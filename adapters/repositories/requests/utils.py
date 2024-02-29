@@ -27,7 +27,7 @@ def serverless_api_headers(api_token: str) -> dict[str, str]:
 
 def rapid_api_headers(
     key: str,
-    host: str = FOOTBALL_API_URL,
+    host: str = FOOTBALL_API_HOST_HEADER,
 ) -> dict[str, str]:
     """Create a header for an Rapid API request.
 

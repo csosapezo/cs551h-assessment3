@@ -6,7 +6,7 @@ from attrs import define
 
 
 @define
-class LanguageModelRepository:
+class FootballRepository:
     """Repository to make requests to the football API"""
 
     def team_fixtures(self, team_id: str, season: str) -> dict:
