@@ -6,7 +6,10 @@ from attrs import define
 from dotenv import dotenv_values
 import requests
 
-from adapters.repositories.requests.utils import API_URL, headers
+from adapters.repositories.requests.utils import (
+    HF_API_URL as API_URL,
+    serverless_api_headers as headers,
+)
 
 
 @define
@@ -19,7 +22,7 @@ class LanguageModelRepository:
         """Get and answer from the Language Model Repository"""
         response: requests.Response = requests.post(
             API_URL,
-            headers=headers(self.api_token),
+            headers=headers(api_token=self.api_token),
             json={"inputs": query},
             timeout=600,
         )
