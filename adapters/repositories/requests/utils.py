@@ -13,6 +13,6 @@ def headers(api_token: str) -> dict[str, str]:
         api_token (str): API Token to access a resource
 
     Returns:
-        dict[str, str]: a headers dictionary for the request 
+        dict[str, str]: a headers dictionary for the request
     """
     return {"Authorization": f"Bearer {api_token}"}
