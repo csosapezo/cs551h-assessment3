@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Performance Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .report-container {
+            margin-top: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Player Performance Report</h2>
+        <form id="reportForm">
+            <div class="form-group">
+                <label for="player_name">Player Name:</label>
+                <select id="player_name" name="player_name">
+                </select>
+            </div>
+            <button type="submit">Get Report</button>
+        </form>
+    </div>
+    <div id="response" class="report-container"></div>
+
+    <script>
+        let player_data = {}; 
+
+       document.getElementById('reportForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const playerName = document.getElementById('player_name').value;
+    const playerId = player_data[playerName].player_id;
+    const fixtureId = player_data[playerName].fixture_id; // Get fixture ID directly
+
+    fetch(`http://127.0.0.1:5000/api/getplayer?player_id=${playerId}&fixture_id=${fixtureId}`) 
+                .then(response => response.json())
+                .then(data => {
+                    displayFormattedReport(data.response);
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        function displayFormattedReport(reportText) {
+            const withoutBlockComments = reportText.replace(/\/\*.*?\*\//gs, '');
+            const lines = withoutBlockComments.split('\n');
+            const filteredLines = lines.filter(line => !line.trim().startsWith('//')); 
+            const filteredText = filteredLines.join('\n');
+            const formattedText = filteredText.replace(/\*\*(.*?)\*\*/g, '<span class="bold">$1</span>') .replace(/\[(.*?)\]/g, '<span>$1</span>'); 
+            document.getElementById('response').innerHTML = formattedText;
+        }
+
+        function loadPlayerData() {
+            fetch('player_data.json')
+                .then(response => response.json())
+                .then(data => {
+                    player_data = data; 
+                    populateDropdown();
+                })
+                .catch(error => console.error('Error loading JSON:', error));
+        }
+
+        function populateDropdown() {
+            const playerSelect = document.getElementById('player_name');
+            for (const playerName in player_data) {
+                let option = document.createElement('option');
+                option.value = playerName;
+                option.text = playerName;
+                playerSelect.appendChild(option);
+            }
+        }
+
+         function displayFormattedReport(reportText) {
+            const withoutBlockComments = reportText.replace(/\/\*.*?\*\//gs, '');
+
+            const lines = withoutBlockComments.split('\n');
+
+            const filteredLines = lines.filter(line => !line.trim().startsWith('//'));
+
+            const filteredText = filteredLines.join('\n');
+
+            const formattedText = filteredText
+                .replace(/\*\*(.*?)\*\*/g, '<span class="bold">$1</span>') // Bold
+                .replace(/\[(.*?)\]/g, '<span>$1</span>'); // Regular brackets without special styling, but you can add a class if needed
+
+            document.getElementById('response').innerHTML = formattedText;
+        }
+
+        loadPlayerData(); 
+    </script>
+</body>
+</html>
+
