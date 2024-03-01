@@ -81,7 +81,6 @@ class FootballRepository:
         team_index: int = 1 if is_away else 0
 
         for player in response[team_index]["players"]:
-
             if player["player"]["id"] == player_id:
                 return {
                     "team": response[team_index]["team"],

@@ -98,9 +98,10 @@
 
     const playerName = document.getElementById('player_name').value;
     const playerId = player_data[playerName].player_id;
+    const team = player_data[playerName].team;
     const fixtureId = player_data[playerName].fixture_id; // Get fixture ID directly
 
-    fetch(`http://127.0.0.1:5000/api/getplayer?player_id=${playerId}&fixture_id=${fixtureId}`) 
+    fetch(`http://127.0.0.1:5000/api/getplayer?player_id=${playerId}&fixture_id=${fixtureId}&team=${team}`) 
                 .then(response => response.json())
                 .then(data => {
                     displayFormattedReport(data.response);
@@ -118,7 +119,7 @@
         }
 
         function loadPlayerData() {
-            fetch('player_data.json')
+            fetch('player_data')
                 .then(response => response.json())
                 .then(data => {
                     player_data = data; 
